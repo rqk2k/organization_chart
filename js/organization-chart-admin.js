@@ -3,7 +3,7 @@
  * JavaScript for organization chart admin interface.
  */
 
-(function ($, Drupal, drupalSettings) {
+(function ($, Drupal, drupalSettings, once) {
   "use strict";
 
   /**
@@ -12,9 +12,8 @@
   Drupal.behaviors.organizationChartAdmin = {
     attach: function (context, settings) {
       // Theme preview functionality
-      $(".organization-chart-theme-form", context)
-        .once("theme-preview")
-        .each(function () {
+      $(once("theme-preview", ".organization-chart-theme-form", context)).each(
+        function () {
           const form = $(this);
           const previewElement = $(
             '<div class="organization-chart-preview-box"><div class="organization-chart-preview-element"><div class="organization-chart-preview-image">👤</div><div class="organization-chart-preview-title">Sample Name</div><div class="organization-chart-preview-description">Sample Position</div></div></div>'
@@ -29,15 +28,14 @@
 
           // Initial preview update
           updateThemePreview(form, previewElement);
-        });
+        }
+      );
 
       // Color picker enhancements
-      $('input[type="color"]', context)
-        .once("color-picker")
-        .each(function () {
-          const input = $(this);
-          const wrapper = $(
-            '<div class="organization-chart-color-picker"></div>'
+      $(once("color-picker", 'input[type="color"]', context)).each(function () {
+        const input = $(this);
+        const wrapper = $(
+          '<div class="organization-chart-color-picker"></div>'
           );
           const textInput = $('<input type="text" class="form-text">');
 
@@ -55,12 +53,11 @@
               input.trigger("change");
             }
           });
-        });
+      });
 
       // Settings form enhancements
-      $(".organization-chart-settings-form", context)
-        .once("settings-form")
-        .each(function () {
+      $(once("settings-form", ".organization-chart-settings-form", context)).each(
+        function () {
           const form = $(this);
 
           // Show/hide conditional fields
@@ -99,12 +96,12 @@
               reader.readAsDataURL(file);
             }
           });
-        });
+        }
+      );
 
       // Chart list enhancements
-      $(".organization-chart-list", context)
-        .once("chart-list")
-        .each(function () {
+      $(once("chart-list", ".organization-chart-list", context)).each(
+        function () {
           const list = $(this);
 
           // Bulk actions
@@ -130,7 +127,8 @@
             .on("dblclick", function () {
               makeEditable($(this));
             });
-        });
+        }
+      );
 
       // Chart builder integration
       if (window.location.pathname.includes("/builder")) {
@@ -138,31 +136,36 @@
       }
 
       // Shortcode generator
-      $(".organization-chart-shortcode-generator", context)
-        .once("shortcode-generator")
-        .each(function () {
-          setupShortcodeGenerator($(this));
-        });
+      $(
+        once(
+          "shortcode-generator",
+          ".organization-chart-shortcode-generator",
+          context
+        )
+      ).each(function () {
+        setupShortcodeGenerator($(this));
+      });
 
       // Help system
-      $(".organization-chart-help-trigger", context)
-        .once("help-trigger")
-        .on("click", function (e) {
+      $(once("help-trigger", ".organization-chart-help-trigger", context)).on(
+        "click",
+        function (e) {
           e.preventDefault();
           showHelpModal($(this).data("help-topic"));
-        });
+        }
+      );
 
       // Auto-save draft functionality
-      $("form.organization-chart-form", context)
-        .once("auto-save")
-        .each(function () {
+      $(once("auto-save", "form.organization-chart-form", context)).each(
+        function () {
           setupAutoSave($(this));
-        });
+        }
+      );
 
       // Keyboard shortcuts
-      $(document)
-        .once("keyboard-shortcuts")
-        .on("keydown", function (e) {
+      $(once("keyboard-shortcuts", document, context)).on(
+        "keydown",
+        function (e) {
           if (e.ctrlKey || e.metaKey) {
             switch (e.key) {
               case "s":
@@ -181,7 +184,8 @@
                 break;
             }
           }
-        });
+        }
+      );
     },
   };
 
@@ -746,4 +750,4 @@
     `
     )
     .appendTo("head");
-})(jQuery, Drupal, drupalSettings);
+})(jQuery, Drupal, drupalSettings, once);

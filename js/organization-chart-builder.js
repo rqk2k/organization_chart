@@ -3,7 +3,7 @@
  * JavaScript for organization chart builder interface.
  */
 
-(function ($, Drupal, drupalSettings) {
+(function ($, Drupal, drupalSettings, once) {
   "use strict";
 
   /**
@@ -11,11 +11,11 @@
    */
   Drupal.behaviors.organizationChartBuilder = {
     attach: function (context, settings) {
-      $(".org-chart-builder", context)
-        .once("org-chart-builder")
-        .each(function () {
+      $(once("org-chart-builder", ".org-chart-builder", context)).each(
+        function () {
           new OrganizationChartBuilder(this);
-        });
+        }
+      );
     },
   };
 
@@ -740,4 +740,4 @@
       window.open(previewUrl, "_blank", "width=1200,height=800");
     },
   };
-})(jQuery, Drupal, drupalSettings);
+})(jQuery, Drupal, drupalSettings, once);

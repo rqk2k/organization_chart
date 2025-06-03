@@ -3,7 +3,7 @@
  * JavaScript for organization chart display functionality.
  */
 
-(function ($, Drupal, drupalSettings) {
+(function ($, Drupal, drupalSettings, once) {
   "use strict";
 
   /**
@@ -11,11 +11,11 @@
    */
   Drupal.behaviors.organizationChartDisplay = {
     attach: function (context, settings) {
-      $(".organization-chart", context)
-        .once("org-chart-display")
-        .each(function () {
+      $(once("org-chart-display", ".organization-chart", context)).each(
+        function () {
           new OrganizationChart(this);
-        });
+        }
+      );
     },
   };
 
@@ -505,4 +505,4 @@
     `
     )
     .appendTo("head");
-})(jQuery, Drupal, drupalSettings);
+})(jQuery, Drupal, drupalSettings, once);
