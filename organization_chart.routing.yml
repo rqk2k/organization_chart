@@ -38,6 +38,21 @@ organization_chart.chart_delete:
   requirements:
     _permission: "administer organization chart"
 
+organization_chart.export:
+  path: "/admin/structure/organization-chart/{chart_id}/export/{format}"
+  defaults:
+    _controller: '\Drupal\organization_chart\Controller\OrganizationChartController::exportChart'
+    _title: "Export Organization Chart"
+    format: "json" # Default format if not provided in URL
+  requirements:
+    _permission: "administer organization chart"
+  options:
+    parameters:
+      chart_id:
+        type: integer
+      format:
+        type: string
+
 organization_chart.themes_list:
   path: "/admin/structure/organization-chart/themes"
   defaults:
