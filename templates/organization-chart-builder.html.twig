@@ -1,0 +1,263 @@
+{#
+/**
+ * @file
+ * Template for the organization chart builder interface.
+ *
+ * Available variables:
+ * - chart: The chart object.
+ * - elements: Array of chart elements.
+ * - themes: Available themes.
+ */
+#}
+
+<div class="org-chart-builder" data-chart-id="{{ chart.id }}">
+
+  <div class="org-chart-builder-header">
+    <h2>{{ 'Building Chart: @name'|t({'@name': chart.name}) }}</h2>
+
+    <div class="org-chart-builder-actions">
+      <button type="button" class="button button--primary" id="save-chart">
+        {{ 'Save Chart'|t }}
+      </button>
+      <button type="button" class="button" id="preview-chart">
+        {{ 'Preview'|t }}
+      </button>
+      <a href="{{ path('organization_chart.charts_list') }}" class="button">
+        {{ 'Back to Charts'|t }}
+      </a>
+    </div>
+  </div>
+
+  <div class="org-chart-builder-toolbar">
+
+    <div class="org-chart-builder-tools">
+      <button type="button" class="button org-chart-add-element" data-action="add-root">
+        <span class="icon">+</span>
+        {{ 'Add Root Element'|t }}
+      </button>
+
+      <button type="button" class="button org-chart-zoom-fit">
+        <span class="icon">⚏</span>
+        {{ 'Fit to View'|t }}
+      </button>
+
+      <button type="button" class="button org-chart-zoom-reset">
+        <span class="icon">⊙</span>
+        {{ 'Reset Zoom'|t }}
+      </button>
+
+      <select id="org-chart-grid-snap" class="form-select">
+        <option value="0">{{ 'No Grid'|t }}</option>
+        <option value="10">{{ '10px Grid'|t }}</option>
+        <option value="20" selected>{{ '20px Grid'|t }}</option>
+        <option value="50">{{ '50px Grid'|t }}</option>
+      </select>
+    </div>
+
+    <div class="org-chart-builder-info">
+      <span class="org-chart-element-count">
+        {{ 'Elements: @count'|t({'@count': elements|length}) }}
+      </span>
+
+      <span class="org-chart-zoom-level">
+        {{ 'Zoom: 100%'|t }}
+      </span>
+    </div>
+
+  </div>
+
+  <div class="org-chart-builder-workspace">
+
+    <div class="org-chart-builder-sidebar">
+
+      <div class="org-chart-builder-panel">
+        <h3>{{ 'Element Properties'|t }}</h3>
+
+        <div id="element-properties-form" class="org-chart-element-form" style="display: none;">
+
+          <div class="form-item">
+            <label for="element-title">{{ 'Title'|t }}</label>
+            <input type="text" id="element-title" name="title" class="form-text">
+          </div>
+
+          <div class="form-item">
+            <label for="element-description">{{ 'Description'|t }}</label>
+            <textarea id="element-description" name="description" class="form-textarea" rows="3"></textarea>
+          </div>
+
+          <div class="form-item">
+            <label for="element-image">{{ 'Image URL'|t }}</label>
+            <input type="url" id="element-image" name="image_url" class="form-url">
+            <button type="button" class="button button--small" id="upload-image">
+              {{ 'Upload'|t }}
+            </button>
+          </div>
+
+          <div class="form-item">
+            <label for="element-link">{{ 'Link URL'|t }}</label>
+            <input type="url" id="element-link" name="link_url" class="form-url">
+          </div>
+
+          <div class="form-item">
+            <label for="element-theme">{{ 'Theme'|t }}</label>
+            <select id="element-theme" name="theme_id" class="form-select">
+              <option value="">{{ '- Use Default -'|t }}</option>
+              {% for theme_id, theme_name in themes %}
+                <option value="{{ theme_id }}">{{ theme_name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="button button--primary" id="update-element">
+              {{ 'Update Element'|t }}
+            </button>
+            <button type="button" class="button button--danger" id="delete-element">
+              {{ 'Delete Element'|t }}
+            </button>
+          </div>
+
+        </div>
+
+        <div id="no-element-selected" class="org-chart-no-selection">
+          <p>{{ 'Select an element to edit its properties.'|t }}</p>
+        </div>
+
+      </div>
+
+      <div class="org-chart-builder-panel">
+        <h3>{{ 'Instructions'|t }}</h3>
+        <div class="org-chart-help">
+          <ul>
+            <li>{{ 'Click on an element to select and edit it'|t }}</li>
+            <li>{{ 'Drag elements to move them around'|t }}</li>
+            <li>{{ 'Hover over an element and click the + button to add children'|t }}</li>
+            <li>{{ 'Use the zoom controls to navigate large charts'|t }}</li>
+            <li>{{ 'Press Ctrl+S to save your changes'|t }}</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="org-chart-builder-canvas-container">
+
+      <div class="org-chart-builder-canvas"
+           data-snap-grid="20"
+           data-zoom="1"
+           data-pan-x="0"
+           data-pan-y="0">
+
+        {# Grid background #}
+        <div class="org-chart-grid" aria-hidden="true"></div>
+
+        {# Chart elements #}
+        <div class="org-chart-elements">
+          {% for element in elements %}
+            <div class="org-chart-builder-element"
+                 data-element-id="{{ element.id }}"
+                 data-parent-id="{{ element.parent_id }}"
+                 data-x="{{ element.position_x }}"
+                 data-y="{{ element.position_y }}"
+                 style="transform: translate({{ element.position_x }}px, {{ element.position_y }}px);">
+
+              <div class="org-chart-builder-element-content">
+
+                <div class="org-chart-builder-element-header">
+                  <button type="button" class="org-chart-builder-element-select"
+                          aria-label="{{ 'Select element'|t }}">
+                    {{ element.title ?: 'Untitled'|t }}
+                  </button>
+
+                  <div class="org-chart-builder-element-actions">
+                    <button type="button" class="org-chart-builder-add-child"
+                            aria-label="{{ 'Add child element'|t }}"
+                            data-parent-id="{{ element.id }}">
+                      +
+                    </button>
+                  </div>
+                </div>
+
+                {% if element.image_url %}
+                  <div class="org-chart-builder-element-image">
+                    <img src="{{ element.image_url }}" alt="{{ element.title }}">
+                  </div>
+                {% endif %}
+
+                {% if element.description %}
+                  <div class="org-chart-builder-element-description">
+                    {{ element.description|length > 50 ? element.description|slice(0, 50) ~ '...' : element.description }}
+                  </div>
+                {% endif %}
+
+              </div>
+
+              {# Drag handle #}
+              <div class="org-chart-builder-drag-handle" aria-label="{{ 'Drag to move'|t }}">
+                ⋮⋮
+              </div>
+
+              {# Connection points #}
+              <div class="org-chart-builder-connections" aria-hidden="true">
+                <div class="org-chart-connection-point org-chart-connection-top"></div>
+                <div class="org-chart-connection-point org-chart-connection-bottom"></div>
+                <div class="org-chart-connection-point org-chart-connection-left"></div>
+                <div class="org-chart-connection-point org-chart-connection-right"></div>
+              </div>
+
+            </div>
+          {% endfor %}
+        </div>
+
+        {# Connection lines (SVG) #}
+        <svg class="org-chart-builder-lines" aria-hidden="true">
+          <defs>
+            <marker id="arrowhead" markerWidth="10" markerHeight="7"
+                    refX="9" refY="3.5" orient="auto">
+              <polygon points="0 0, 10 3.5, 0 7" fill="#999" />
+            </marker>
+          </defs>
+
+          {% for element in elements %}
+            {% if element.parent_id %}
+              <line class="org-chart-builder-line"
+                    data-from="{{ element.parent_id }}"
+                    data-to="{{ element.id }}"
+                    stroke="#999"
+                    stroke-width="2"
+                    marker-end="url(#arrowhead)">
+              </line>
+            {% endif %}
+          {% endfor %}
+        </svg>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  {# File upload modal #}
+  <div id="file-upload-modal" class="org-chart-modal" role="dialog" aria-hidden="true">
+    <div class="org-chart-modal-backdrop"></div>
+    <div class="org-chart-modal-content">
+      <div class="org-chart-modal-header">
+        <h3>{{ 'Upload Image'|t }}</h3>
+        <button type="button" class="org-chart-modal-close" aria-label="{{ 'Close'|t }}">&times;</button>
+      </div>
+      <div class="org-chart-modal-body">
+        <input type="file" id="image-file-input" accept="image/*" class="form-file">
+        <div id="image-preview" class="org-chart-image-preview"></div>
+      </div>
+      <div class="org-chart-modal-footer">
+        <button type="button" class="button button--primary" id="confirm-upload">
+          {{ 'Use This Image'|t }}
+        </button>
+        <button type="button" class="button" id="cancel-upload">
+          {{ 'Cancel'|t }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,48 @@
+display:
+  version: 1.x
+  css:
+    theme:
+      css/organization-chart-display.css: {}
+  js:
+    js/organization-chart-display.js: {}
+  dependencies:
+    - core/jquery
+    - core/drupal
+    - core/jquery.once
+
+builder:
+  version: 1.x
+  css:
+    theme:
+      css/organization-chart-builder.css: {}
+  js:
+    js/organization-chart-builder.js: {}
+  dependencies:
+    - core/jquery
+    - core/drupal
+    - core/jquery.once
+    - core/jquery.ui.draggable
+    - core/jquery.ui.droppable
+    - core/jquery.ui.sortable
+
+admin:
+  version: 1.x
+  css:
+    theme:
+      css/organization-chart-admin.css: {}
+  js:
+    js/organization-chart-admin.js: {}
+  dependencies:
+    - core/jquery
+    - core/drupal
+
+global:
+  version: 1.x
+  css:
+    theme:
+      css/organization-chart-global.css: {}
+  js:
+    js/organization-chart-global.js: {}
+  dependencies:
+    - core/jquery
+    - core/drupal

@@ -1,0 +1,15 @@
+name: Organization Chart
+type: module
+description: "A comprehensive organizational chart module for creating and managing hierarchical team structures with visual editor."
+core_version_requirement: ^10
+package: Content
+dependencies:
+  - drupal:system
+  - drupal:field
+  - drupal:file
+  - drupal:image
+  - drupal:text
+  - drupal:link
+  - drupal:user
+  - drupal:node
+configure: organization_chart.admin_settings

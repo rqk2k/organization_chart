@@ -1,0 +1,387 @@
+/**
+ * @file
+ * Admin styles for organization chart module.
+ */
+
+.organization-chart-admin {
+  background: #f8f9fa;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.organization-chart-admin-header {
+  background: #fff;
+  padding: 1.5rem;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.organization-chart-admin-header h1 {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.organization-chart-admin-actions {
+  margin-top: 1rem;
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.organization-chart-list {
+  background: #fff;
+  margin: 0;
+}
+
+.organization-chart-list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #f1f3f4;
+  transition: background-color 0.2s ease;
+}
+
+.organization-chart-list-item:hover {
+  background: #f8f9fa;
+}
+
+.organization-chart-list-item:last-child {
+  border-bottom: none;
+}
+
+.organization-chart-item-info {
+  flex: 1;
+}
+
+.organization-chart-item-title {
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: #333;
+  margin: 0 0 0.25rem 0;
+}
+
+.organization-chart-item-meta {
+  font-size: 0.875rem;
+  color: #6c757d;
+  display: flex;
+  gap: 1rem;
+}
+
+.organization-chart-item-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.organization-chart-empty {
+  text-align: center;
+  padding: 3rem;
+  color: #6c757d;
+}
+
+.organization-chart-empty-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 1rem;
+  opacity: 0.5;
+}
+
+.organization-chart-settings-form {
+  max-width: 800px;
+}
+
+.organization-chart-settings-form .form-item {
+  margin-bottom: 1.5rem;
+}
+
+.organization-chart-settings-form .form-item label {
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.organization-chart-settings-form .description {
+  font-size: 0.875rem;
+  color: #6c757d;
+  margin-top: 0.25rem;
+  line-height: 1.4;
+}
+
+.organization-chart-settings-section {
+  background: #fff;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+  overflow: hidden;
+}
+
+.organization-chart-settings-section > summary {
+  background: #f8f9fa;
+  padding: 1rem 1.5rem;
+  cursor: pointer;
+  font-weight: 500;
+  border-bottom: 1px solid #dee2e6;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.organization-chart-settings-section > summary:hover {
+  background: #e9ecef;
+}
+
+.organization-chart-settings-section > summary::marker {
+  display: none;
+}
+
+.organization-chart-settings-section > summary::before {
+  content: "▶";
+  transition: transform 0.2s ease;
+  font-size: 0.75rem;
+  color: #6c757d;
+}
+
+.organization-chart-settings-section[open] > summary::before {
+  transform: rotate(90deg);
+}
+
+.organization-chart-settings-section .fieldset-wrapper {
+  padding: 1.5rem;
+}
+
+.organization-chart-color-picker {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.organization-chart-color-picker input[type="color"] {
+  width: 40px;
+  height: 32px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  background: none;
+  cursor: pointer;
+}
+
+.organization-chart-preview-box {
+  border: 2px dashed #dee2e6;
+  border-radius: 8px;
+  padding: 2rem;
+  text-align: center;
+  background: #f8f9fa;
+  margin-top: 1rem;
+}
+
+.organization-chart-preview-element {
+  display: inline-block;
+  background: #fff;
+  border: 2px solid #dee2e6;
+  border-radius: 8px;
+  padding: 1rem;
+  min-width: 180px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.organization-chart-preview-image {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: #e9ecef;
+  margin: 0 auto 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6c757d;
+  font-size: 1.5rem;
+}
+
+.organization-chart-preview-title {
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.organization-chart-preview-description {
+  font-size: 0.875rem;
+  color: #6c757d;
+}
+
+.organization-chart-shortcode-help {
+  background: #f1f8ff;
+  border: 1px solid #c8e1ff;
+  border-radius: 6px;
+  padding: 1rem;
+  margin: 1rem 0;
+}
+
+.organization-chart-shortcode-help h4 {
+  margin: 0 0 0.75rem 0;
+  color: #0969da;
+  font-size: 1rem;
+}
+
+.organization-chart-shortcode-help code {
+  background: #f6f8fa;
+  border: 1px solid #d1d9e0;
+  border-radius: 3px;
+  padding: 0.125rem 0.375rem;
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 0.875rem;
+}
+
+.organization-chart-shortcode-examples {
+  list-style: none;
+  padding: 0;
+  margin: 0.75rem 0 0 0;
+}
+
+.organization-chart-shortcode-examples li {
+  margin: 0.5rem 0;
+  padding: 0.5rem;
+  background: #ffffff;
+  border: 1px solid #e1e4e8;
+  border-radius: 4px;
+}
+
+.organization-chart-theme-preview {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.organization-chart-theme-card {
+  background: #fff;
+  border: 2px solid #dee2e6;
+  border-radius: 8px;
+  padding: 1rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.organization-chart-theme-card:hover {
+  border-color: #007cba;
+  box-shadow: 0 4px 12px rgba(0, 124, 186, 0.1);
+}
+
+.organization-chart-theme-card.selected {
+  border-color: #007cba;
+  background: #f1f8ff;
+}
+
+.organization-chart-theme-name {
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.organization-chart-theme-settings {
+  font-size: 0.875rem;
+  color: #6c757d;
+}
+
+.organization-chart-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin: 2rem 0;
+}
+
+.organization-chart-stat-card {
+  background: #fff;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.organization-chart-stat-number {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #007cba;
+  margin-bottom: 0.5rem;
+}
+
+.organization-chart-stat-label {
+  font-size: 0.875rem;
+  color: #6c757d;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.organization-chart-help-section {
+  background: #fff;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  padding: 2rem;
+  margin: 2rem 0;
+}
+
+.organization-chart-help-section h3 {
+  margin: 0 0 1rem 0;
+  color: #333;
+  font-size: 1.25rem;
+}
+
+.organization-chart-help-section ul {
+  margin: 0;
+  padding-left: 1.5rem;
+}
+
+.organization-chart-help-section li {
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .organization-chart-admin-header {
+    padding: 1rem;
+  }
+
+  .organization-chart-admin-actions {
+    flex-direction: column;
+  }
+
+  .organization-chart-list-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  .organization-chart-item-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .organization-chart-settings-section .fieldset-wrapper {
+    padding: 1rem;
+  }
+
+  .organization-chart-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .organization-chart-theme-preview {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Print styles */
+@media print {
+  .organization-chart-admin-actions,
+  .organization-chart-item-actions {
+    display: none !important;
+  }
+
+  .organization-chart-admin {
+    border: none;
+    background: #fff;
+  }
+}

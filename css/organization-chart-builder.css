@@ -1,0 +1,578 @@
+/**
+ * @file
+ * Styles for organization chart builder interface.
+ */
+
+.org-chart-builder {
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.org-chart-builder-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  background: #fff;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.org-chart-builder-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.org-chart-builder-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.org-chart-builder-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1.5rem;
+  background: #f8f9fa;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.org-chart-builder-tools {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.org-chart-builder-tools .button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid #ced4da;
+  background: #fff;
+  color: #495057;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+}
+
+.org-chart-builder-tools .button:hover {
+  background: #e9ecef;
+  border-color: #adb5bd;
+}
+
+.org-chart-builder-tools .button .icon {
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.org-chart-builder-info {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.875rem;
+  color: #6c757d;
+}
+
+.org-chart-builder-workspace {
+  display: flex;
+  height: 600px;
+}
+
+.org-chart-builder-sidebar {
+  width: 300px;
+  background: #fff;
+  border-right: 1px solid #dee2e6;
+  overflow-y: auto;
+  flex-shrink: 0;
+}
+
+.org-chart-builder-panel {
+  padding: 1rem;
+  border-bottom: 1px solid #f1f3f4;
+}
+
+.org-chart-builder-panel:last-child {
+  border-bottom: none;
+}
+
+.org-chart-builder-panel h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.org-chart-element-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.org-chart-element-form .form-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.org-chart-element-form label {
+  font-weight: 500;
+  color: #495057;
+  font-size: 0.875rem;
+}
+
+.org-chart-element-form input,
+.org-chart-element-form textarea,
+.org-chart-element-form select {
+  padding: 0.5rem;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  transition: border-color 0.2s ease;
+}
+
+.org-chart-element-form input:focus,
+.org-chart-element-form textarea:focus,
+.org-chart-element-form select:focus {
+  outline: none;
+  border-color: #007cba;
+  box-shadow: 0 0 0 2px rgba(0, 124, 186, 0.1);
+}
+
+.org-chart-element-form .form-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.org-chart-no-selection {
+  text-align: center;
+  padding: 2rem;
+  color: #6c757d;
+  font-style: italic;
+}
+
+.org-chart-help ul {
+  margin: 0;
+  padding-left: 1.25rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: #6c757d;
+}
+
+.org-chart-help li {
+  margin-bottom: 0.5rem;
+}
+
+.org-chart-builder-canvas-container {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  background: #f8f9fa;
+}
+
+.org-chart-builder-canvas {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  cursor: grab;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.1) 1px, transparent 1px);
+  background-size: 20px 20px;
+  background-position: 0 0, 0 0;
+}
+
+.org-chart-builder-canvas.dragging {
+  cursor: grabbing;
+}
+
+.org-chart-grid {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.org-chart-elements {
+  position: relative;
+  min-width: 100%;
+  min-height: 100%;
+  padding: 2rem;
+}
+
+.org-chart-builder-element {
+  position: absolute;
+  background: #fff;
+  border: 2px solid #dee2e6;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 200px;
+  max-width: 250px;
+}
+
+.org-chart-builder-element:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-color: #007cba;
+}
+
+.org-chart-builder-element.selected {
+  border-color: #007cba;
+  box-shadow: 0 4px 12px rgba(0, 124, 186, 0.3);
+}
+
+.org-chart-builder-element.dragging {
+  transform: rotate(3deg);
+  z-index: 1000;
+  cursor: grabbing;
+}
+
+.org-chart-builder-element-content {
+  padding: 1rem;
+  position: relative;
+}
+
+.org-chart-builder-element-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.org-chart-builder-element-select {
+  flex: 1;
+  padding: 0.5rem;
+  border: 1px solid #dee2e6;
+  background: #f8f9fa;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: left;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.org-chart-builder-element-select:hover {
+  background: #e9ecef;
+}
+
+.org-chart-builder-element-actions {
+  margin-left: 0.5rem;
+}
+
+.org-chart-builder-add-child {
+  width: 28px;
+  height: 28px;
+  border: 1px solid #28a745;
+  background: #28a745;
+  color: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+}
+
+.org-chart-builder-add-child:hover {
+  background: #218838;
+}
+
+.org-chart-builder-element-image {
+  text-align: center;
+  margin-bottom: 0.75rem;
+}
+
+.org-chart-builder-element-image img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #f8f9fa;
+}
+
+.org-chart-builder-element-description {
+  font-size: 0.875rem;
+  color: #6c757d;
+  line-height: 1.3;
+}
+
+.org-chart-builder-drag-handle {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  width: 20px;
+  height: 20px;
+  color: #adb5bd;
+  cursor: grab;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  border-radius: 3px;
+  transition: all 0.2s ease;
+}
+
+.org-chart-builder-drag-handle:hover {
+  background: #f8f9fa;
+  color: #6c757d;
+}
+
+.org-chart-builder-connections {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.org-chart-connection-point {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: #007cba;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.org-chart-builder-element:hover .org-chart-connection-point,
+.org-chart-builder-element.selected .org-chart-connection-point {
+  opacity: 1;
+}
+
+.org-chart-connection-top {
+  top: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.org-chart-connection-bottom {
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.org-chart-connection-left {
+  left: -6px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.org-chart-connection-right {
+  right: -6px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.org-chart-builder-lines {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.org-chart-builder-line {
+  stroke: #6c757d;
+  stroke-width: 2;
+  fill: none;
+  opacity: 0.7;
+}
+
+.org-chart-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10000;
+  display: none;
+}
+
+.org-chart-modal[aria-hidden="false"] {
+  display: block;
+}
+
+.org-chart-modal-backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+}
+
+.org-chart-modal-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow: auto;
+  min-width: 400px;
+}
+
+.org-chart-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.org-chart-modal-header h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.org-chart-modal-close {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: none;
+  font-size: 1.5rem;
+  color: #adb5bd;
+  cursor: pointer;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.org-chart-modal-close:hover {
+  background: #f8f9fa;
+  color: #6c757d;
+}
+
+.org-chart-modal-body {
+  padding: 1.5rem;
+}
+
+.org-chart-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid #dee2e6;
+  background: #f8f9fa;
+}
+
+.org-chart-image-preview {
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.org-chart-image-preview img {
+  max-width: 200px;
+  max-height: 200px;
+  border-radius: 8px;
+  border: 2px solid #dee2e6;
+}
+
+/* Animation classes */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -60%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
+
+.org-chart-modal-content {
+  animation: slideIn 0.2s ease forwards;
+}
+
+.org-chart-builder-element {
+  animation: fadeIn 0.3s ease forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive design */
+@media (max-width: 1024px) {
+  .org-chart-builder-workspace {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .org-chart-builder-sidebar {
+    width: 100%;
+    height: 300px;
+    border-right: none;
+    border-bottom: 1px solid #dee2e6;
+  }
+
+  .org-chart-builder-canvas-container {
+    height: 400px;
+  }
+}
+
+@media (max-width: 768px) {
+  .org-chart-builder-header {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+
+  .org-chart-builder-actions {
+    justify-content: center;
+  }
+
+  .org-chart-builder-toolbar {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+
+  .org-chart-builder-tools {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .org-chart-modal-content {
+    margin: 1rem;
+    min-width: auto;
+    max-width: calc(100vw - 2rem);
+  }
+
+  .org-chart-builder-element {
+    min-width: 160px;
+    max-width: 180px;
+  }
+}

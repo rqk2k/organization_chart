@@ -1,0 +1,264 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the Organization Chart module.
+ */
+
+use Drupal\Core\Database\Database;
+
+/**
+ * Implements hook_schema().
+ */
+function organization_chart_schema() {
+  $schema = [];
+
+  // Organization charts table.
+  $schema['organization_charts'] = [
+    'description' => 'Stores organization chart data.',
+    'fields' => [
+      'id' => [
+        'type' => 'serial',
+        'not null' => TRUE,
+        'description' => 'Primary Key: Unique chart ID.',
+      ],
+      'name' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'Chart name.',
+      ],
+      'data' => [
+        'type' => 'text',
+        'size' => 'big',
+        'not null' => FALSE,
+        'description' => 'Chart data as JSON.',
+      ],
+      'created' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Unix timestamp when the chart was created.',
+      ],
+      'updated' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Unix timestamp when the chart was last updated.',
+      ],
+    ],
+    'primary key' => ['id'],
+    'indexes' => [
+      'name' => ['name'],
+      'created' => ['created'],
+    ],
+  ];
+
+  // Organization chart themes table.
+  $schema['organization_chart_themes'] = [
+    'description' => 'Stores organization chart theme data.',
+    'fields' => [
+      'id' => [
+        'type' => 'serial',
+        'not null' => TRUE,
+        'description' => 'Primary Key: Unique theme ID.',
+      ],
+      'name' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'Theme name.',
+      ],
+      'settings' => [
+        'type' => 'text',
+        'size' => 'big',
+        'not null' => FALSE,
+        'description' => 'Theme settings as JSON.',
+      ],
+      'created' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Unix timestamp when the theme was created.',
+      ],
+      'updated' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Unix timestamp when the theme was last updated.',
+      ],
+    ],
+    'primary key' => ['id'],
+    'indexes' => [
+      'name' => ['name'],
+      'created' => ['created'],
+    ],
+  ];
+
+  // Organization chart elements table.
+  $schema['organization_chart_elements'] = [
+    'description' => 'Stores organization chart element data.',
+    'fields' => [
+      'id' => [
+        'type' => 'serial',
+        'not null' => TRUE,
+        'description' => 'Primary Key: Unique element ID.',
+      ],
+      'chart_id' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'description' => 'Chart ID this element belongs to.',
+      ],
+      'parent_id' => [
+        'type' => 'int',
+        'not null' => FALSE,
+        'description' => 'Parent element ID.',
+      ],
+      'title' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+        'default' => '',
+        'description' => 'Element title.',
+      ],
+      'description' => [
+        'type' => 'text',
+        'not null' => FALSE,
+        'description' => 'Element description.',
+      ],
+      'image_url' => [
+        'type' => 'varchar',
+        'length' => 500,
+        'not null' => FALSE,
+        'default' => '',
+        'description' => 'Element image URL.',
+      ],
+      'link_url' => [
+        'type' => 'varchar',
+        'length' => 500,
+        'not null' => FALSE,
+        'default' => '',
+        'description' => 'Element link URL.',
+      ],
+      'position_x' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'X position in the chart.',
+      ],
+      'position_y' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Y position in the chart.',
+      ],
+      'theme_id' => [
+        'type' => 'int',
+        'not null' => FALSE,
+        'description' => 'Custom theme ID for this element.',
+      ],
+      'weight' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Element weight for ordering.',
+      ],
+    ],
+    'primary key' => ['id'],
+    'indexes' => [
+      'chart_id' => ['chart_id'],
+      'parent_id' => ['parent_id'],
+      'weight' => ['weight'],
+    ],
+    'foreign keys' => [
+      'chart_id' => [
+        'table' => 'organization_charts',
+        'columns' => ['chart_id' => 'id'],
+      ],
+    ],
+  ];
+
+  return $schema;
+}
+
+/**
+ * Implements hook_install().
+ */
+function organization_chart_install() {
+  // Create default theme.
+  $connection = Database::getConnection();
+
+  $default_theme_settings = [
+    'general' => [
+      'horizontal_scroll' => TRUE,
+      'responsive' => TRUE,
+      'zoom_enabled' => TRUE,
+      'fullscreen_enabled' => TRUE,
+      'popup_enabled' => TRUE,
+    ],
+    'line_style' => [
+      'line_color' => '#cccccc',
+      'line_width' => 2,
+      'line_style' => 'solid',
+    ],
+    'item_style' => [
+      'background_color' => '#ffffff',
+      'border_color' => '#cccccc',
+      'border_width' => 1,
+      'border_radius' => 5,
+      'text_color' => '#333333',
+      'font_family' => 'Arial, sans-serif',
+      'font_size' => 14,
+      'padding' => 10,
+      'margin' => 10,
+      'image_width' => 80,
+      'image_height' => 80,
+      'image_border_radius' => 5,
+    ],
+  ];
+
+  $connection->insert('organization_chart_themes')
+    ->fields([
+      'name' => 'Default Theme',
+      'settings' => json_encode($default_theme_settings),
+      'created' => \Drupal::time()->getRequestTime(),
+      'updated' => \Drupal::time()->getRequestTime(),
+    ])
+    ->execute();
+
+  // Create sample organization chart.
+  $chart_id = $connection->insert('organization_charts')
+    ->fields([
+      'name' => 'Sample Organization Chart',
+      'data' => json_encode(['description' => 'This is a sample organization chart']),
+      'created' => \Drupal::time()->getRequestTime(),
+      'updated' => \Drupal::time()->getRequestTime(),
+    ])
+    ->execute();
+
+  // Add sample CEO element.
+  $connection->insert('organization_chart_elements')
+    ->fields([
+      'chart_id' => $chart_id,
+      'parent_id' => NULL,
+      'title' => 'CEO',
+      'description' => 'Chief Executive Officer',
+      'image_url' => '',
+      'link_url' => '',
+      'position_x' => 0,
+      'position_y' => 0,
+      'theme_id' => 1,
+      'weight' => 0,
+    ])
+    ->execute();
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function organization_chart_uninstall() {
+  // Remove any configuration variables.
+  \Drupal::configFactory()->getEditable('organization_chart.settings')->delete();
+}

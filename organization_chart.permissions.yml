@@ -1,0 +1,8 @@
+administer organization chart:
+  title: "Administer organization charts"
+  description: "Create, edit, and delete organization charts and themes."
+  restrict access: TRUE
+
+view organization chart:
+  title: "View organization charts"
+  description: "View organization charts on the frontend."

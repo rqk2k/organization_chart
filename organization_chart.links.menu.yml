@@ -1,0 +1,20 @@
+organization_chart.admin_settings:
+  title: "Organization Chart"
+  description: "Configure organization chart settings."
+  parent: system.admin_config_content
+  route_name: organization_chart.admin_settings
+  weight: 10
+
+organization_chart.charts_list:
+  title: "Organization Charts"
+  description: "Manage organization charts and themes."
+  parent: system.admin_structure
+  route_name: organization_chart.charts_list
+  weight: 10
+
+organization_chart.themes_list:
+  title: "Chart Themes"
+  description: "Manage organization chart themes."
+  parent: organization_chart.charts_list
+  route_name: organization_chart.themes_list
+  weight: 20

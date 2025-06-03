@@ -1,0 +1,288 @@
+<?php
+
+/**
+ * @file
+ * Organization Chart module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function organization_chart_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    case 'help.page.organization_chart':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('The Organization Chart module allows you to create and display hierarchical organizational charts on your website.') . '</p>';
+      $output .= '<h3>' . t('Features') . '</h3>';
+      $output .= '<ul>';
+      $output .= '<li>' . t('Visual chart builder with drag-and-drop functionality') . '</li>';
+      $output .= '<li>' . t('Multiple themes and styling options') . '</li>';
+      $output .= '<li>' . t('Shortcode/token support: [org_chart chart_id=1 theme_id=2]') . '</li>';
+      $output .= '<li>' . t('Responsive design with zoom and fullscreen features') . '</li>';
+      $output .= '<li>' . t('Block integration for easy placement') . '</li>';
+      $output .= '<li>' . t('User permissions and access control') . '</li>';
+      $output .= '</ul>';
+      $output .= '<h3>' . t('Usage') . '</h3>';
+      $output .= '<p>' . t('Visit the <a href="@charts">Organization Charts</a> page to create and manage your charts.', [
+        '@charts' => \Drupal\Core\Url::fromRoute('organization_chart.charts_list')->toString(),
+      ]) . '</p>';
+      return $output;
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function organization_chart_theme() {
+  return [
+    'organization_chart_display' => [
+      'variables' => [
+        'chart' => NULL,
+        'elements' => [],
+        'theme_settings' => [],
+        'config' => [],
+      ],
+      'template' => 'organization-chart-display',
+    ],
+    'organization_chart_builder' => [
+      'variables' => [
+        'chart' => NULL,
+        'elements' => [],
+        'themes' => [],
+      ],
+      'template' => 'organization-chart-builder',
+    ],
+    'organization_chart_element' => [
+      'variables' => [
+        'element' => NULL,
+        'theme_settings' => [],
+      ],
+      'template' => 'organization-chart-element',
+    ],
+  ];
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for organization_chart_display.
+ */
+function organization_chart_preprocess_organization_chart_display(&$variables) {
+  $config = \Drupal::config('organization_chart.settings');
+
+  // Add custom CSS if configured.
+  $custom_css = $config->get('custom_css');
+  if ($custom_css) {
+    $variables['#attached']['html_head'][] = [
+      [
+        '#tag' => 'style',
+        '#value' => $custom_css,
+      ],
+      'organization_chart_custom_css',
+    ];
+  }
+
+  // Add custom JS if configured.
+  $custom_js = $config->get('custom_js');
+  if ($custom_js) {
+    $variables['#attached']['html_head'][] = [
+      [
+        '#tag' => 'script',
+        '#value' => $custom_js,
+      ],
+      'organization_chart_custom_js',
+    ];
+  }
+
+  // Add chart-specific CSS classes.
+  $variables['chart_classes'] = [
+    'organization-chart',
+    'organization-chart-' . $variables['chart']->id,
+  ];
+
+  if (!empty($variables['config']['responsive'])) {
+    $variables['chart_classes'][] = 'organization-chart-responsive';
+  }
+
+  // Build hierarchical structure.
+  if (!empty($variables['elements'])) {
+    $variables['hierarchy'] = organization_chart_build_hierarchy($variables['elements']);
+  }
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for organization_chart_element.
+ */
+function organization_chart_preprocess_organization_chart_element(&$variables) {
+  $element = $variables['element'];
+  $theme_settings = $variables['theme_settings'];
+
+  // Generate element classes.
+  $variables['element_classes'] = [
+    'org-chart-element',
+    'org-chart-element-' . $element->id,
+  ];
+
+  if ($element->parent_id) {
+    $variables['element_classes'][] = 'org-chart-child';
+  } else {
+    $variables['element_classes'][] = 'org-chart-root';
+  }
+
+  // Generate inline styles from theme settings.
+  $styles = [];
+
+  if (!empty($theme_settings['item_style'])) {
+    $item_style = $theme_settings['item_style'];
+
+    if (!empty($item_style['background_color'])) {
+      $styles[] = 'background-color: ' . $item_style['background_color'];
+    }
+
+    if (!empty($item_style['border_color'])) {
+      $styles[] = 'border-color: ' . $item_style['border_color'];
+    }
+
+    if (!empty($item_style['border_width'])) {
+      $styles[] = 'border-width: ' . $item_style['border_width'] . 'px';
+    }
+
+    if (!empty($item_style['border_radius'])) {
+      $styles[] = 'border-radius: ' . $item_style['border_radius'] . 'px';
+    }
+
+    if (!empty($item_style['text_color'])) {
+      $styles[] = 'color: ' . $item_style['text_color'];
+    }
+
+    if (!empty($item_style['font_family'])) {
+      $styles[] = 'font-family: ' . $item_style['font_family'];
+    }
+
+    if (!empty($item_style['font_size'])) {
+      $styles[] = 'font-size: ' . $item_style['font_size'] . 'px';
+    }
+
+    if (!empty($item_style['padding'])) {
+      $styles[] = 'padding: ' . $item_style['padding'] . 'px';
+    }
+
+    if (!empty($item_style['margin'])) {
+      $styles[] = 'margin: ' . $item_style['margin'] . 'px';
+    }
+  }
+
+  $variables['element_styles'] = implode('; ', $styles);
+
+  // Process image styles.
+  $image_styles = [];
+
+  if (!empty($theme_settings['item_style'])) {
+    $item_style = $theme_settings['item_style'];
+
+    if (!empty($item_style['image_width'])) {
+      $image_styles[] = 'width: ' . $item_style['image_width'] . 'px';
+    }
+
+    if (!empty($item_style['image_height'])) {
+      $image_styles[] = 'height: ' . $item_style['image_height'] . 'px';
+    }
+
+    if (!empty($item_style['image_border_radius'])) {
+      $image_styles[] = 'border-radius: ' . $item_style['image_border_radius'] . 'px';
+    }
+  }
+
+  $variables['image_styles'] = implode('; ', $image_styles);
+}
+
+/**
+ * Builds hierarchical structure from flat array of elements.
+ *
+ * @param array $elements
+ *   Flat array of elements.
+ * @param int|null $parent_id
+ *   Parent ID to build from.
+ *
+ * @return array
+ *   Hierarchical array.
+ */
+function organization_chart_build_hierarchy(array $elements, $parent_id = NULL) {
+  $hierarchy = [];
+
+  foreach ($elements as $element) {
+    if ($element->parent_id == $parent_id) {
+      $element->children = organization_chart_build_hierarchy($elements, $element->id);
+      $hierarchy[] = $element;
+    }
+  }
+
+  return $hierarchy;
+}
+
+/**
+ * Implements hook_filter_info().
+ */
+function organization_chart_filter_info() {
+  return [
+    'organization_chart_shortcode' => [
+      'title' => t('Organization Chart Shortcodes'),
+      'description' => t('Converts [org_chart] shortcodes to organization charts.'),
+      'process callback' => 'organization_chart_filter_process',
+      'tips callback' => 'organization_chart_filter_tips',
+    ],
+  ];
+}
+
+/**
+ * Filter process callback for organization chart shortcodes.
+ */
+function organization_chart_filter_process($text, $filter, $format, $langcode, $cache, $cache_id) {
+  $service = \Drupal::service('organization_chart.service');
+  return $service->processTokens($text);
+}
+
+/**
+ * Filter tips callback for organization chart shortcodes.
+ */
+function organization_chart_filter_tips($filter, $format, $long = FALSE) {
+  if ($long) {
+    return t('
+      <p>You can embed organization charts using shortcodes:</p>
+      <ul>
+        <li><code>[org_chart chart_id=1]</code> - Display chart with ID 1</li>
+        <li><code>[org_chart chart_id=1 theme_id=2]</code> - Display chart with specific theme</li>
+        <li><code>[org_chart chart_id=1 show_title=0 show_controls=0]</code> - Display chart without title and controls</li>
+      </ul>
+      <p>Available parameters:</p>
+      <ul>
+        <li><strong>chart_id</strong> (required): The ID of the chart to display</li>
+        <li><strong>theme_id</strong> (optional): The ID of the theme to use</li>
+        <li><strong>show_title</strong> (optional): Show chart title (1 or 0)</li>
+        <li><strong>show_controls</strong> (optional): Show zoom controls (1 or 0)</li>
+        <li><strong>enable_fullscreen</strong> (optional): Enable fullscreen button (1 or 0)</li>
+        <li><strong>max_width</strong> (optional): Maximum width (e.g., 100%, 800px)</li>
+        <li><strong>max_height</strong> (optional): Maximum height (e.g., 600px, auto)</li>
+      </ul>
+    ');
+  }
+  else {
+    return t('You can embed organization charts using <code>[org_chart chart_id=1]</code> shortcodes.');
+  }
+}
+
+/**
+ * Implements hook_page_attachments().
+ */
+function organization_chart_page_attachments(array &$attachments) {
+  $config = \Drupal::config('organization_chart.settings');
+
+  // Add global CSS and JS if they exist.
+  $custom_css = $config->get('custom_css');
+  $custom_js = $config->get('custom_js');
+
+  if ($custom_css || $custom_js) {
+    $attachments['#attached']['library'][] = 'organization_chart/global';
+  }
+}

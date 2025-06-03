@@ -1,0 +1,80 @@
+organization_chart.admin_settings:
+  path: "/admin/config/content/organization-chart"
+  defaults:
+    _form: '\Drupal\organization_chart\Form\OrganizationChartSettingsForm'
+    _title: "Organization Chart Settings"
+  requirements:
+    _permission: "administer organization chart"
+
+organization_chart.charts_list:
+  path: "/admin/structure/organization-chart"
+  defaults:
+    _controller: '\Drupal\organization_chart\Controller\OrganizationChartController::chartsList'
+    _title: "Organization Charts"
+  requirements:
+    _permission: "administer organization chart"
+
+organization_chart.chart_add:
+  path: "/admin/structure/organization-chart/add"
+  defaults:
+    _form: '\Drupal\organization_chart\Form\OrganizationChartForm'
+    _title: "Add Organization Chart"
+  requirements:
+    _permission: "administer organization chart"
+
+organization_chart.chart_edit:
+  path: "/admin/structure/organization-chart/{chart_id}/edit"
+  defaults:
+    _form: '\Drupal\organization_chart\Form\OrganizationChartForm'
+    _title: "Edit Organization Chart"
+  requirements:
+    _permission: "administer organization chart"
+
+organization_chart.chart_delete:
+  path: "/admin/structure/organization-chart/{chart_id}/delete"
+  defaults:
+    _form: '\Drupal\organization_chart\Form\OrganizationChartDeleteForm'
+    _title: "Delete Organization Chart"
+  requirements:
+    _permission: "administer organization chart"
+
+organization_chart.themes_list:
+  path: "/admin/structure/organization-chart/themes"
+  defaults:
+    _controller: '\Drupal\organization_chart\Controller\OrganizationChartController::themesList'
+    _title: "Organization Chart Themes"
+  requirements:
+    _permission: "administer organization chart"
+
+organization_chart.theme_add:
+  path: "/admin/structure/organization-chart/themes/add"
+  defaults:
+    _form: '\Drupal\organization_chart\Form\OrganizationChartThemeForm'
+    _title: "Add Organization Chart Theme"
+  requirements:
+    _permission: "administer organization chart"
+
+organization_chart.theme_edit:
+  path: "/admin/structure/organization-chart/themes/{theme_id}/edit"
+  defaults:
+    _form: '\Drupal\organization_chart\Form\OrganizationChartThemeForm'
+    _title: "Edit Organization Chart Theme"
+  requirements:
+    _permission: "administer organization chart"
+
+organization_chart.chart_builder:
+  path: "/admin/structure/organization-chart/{chart_id}/builder"
+  defaults:
+    _controller: '\Drupal\organization_chart\Controller\OrganizationChartController::chartBuilder'
+    _title: "Organization Chart Builder"
+  requirements:
+    _permission: "administer organization chart"
+
+organization_chart.element_ajax:
+  path: "/organization-chart/element/ajax"
+  defaults:
+    _controller: '\Drupal\organization_chart\Controller\OrganizationChartAjaxController::elementOperation'
+  requirements:
+    _permission: "administer organization chart"
+  options:
+    _admin_route: TRUE

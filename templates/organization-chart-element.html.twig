@@ -1,0 +1,104 @@
+{#
+/**
+ * @file
+ * Template for a single organization chart element.
+ *
+ * Available variables:
+ * - element: The element object with id, title, description, image_url, etc.
+ * - theme_settings: Theme configuration settings.
+ * - element_classes: CSS classes for the element.
+ * - element_styles: Inline CSS styles for the element.
+ * - image_styles: Inline CSS styles for the element image.
+ */
+#}
+
+<div class="{{ element_classes|join(' ') }}"
+     data-element-id="{{ element.id }}"
+     data-parent-id="{{ element.parent_id }}"
+     data-position-x="{{ element.position_x }}"
+     data-position-y="{{ element.position_y }}"
+     {% if element_styles %}style="{{ element_styles }}"{% endif %}
+     {% if element.link_url %}role="button" tabindex="0"{% endif %}>
+
+  {# Element content wrapper #}
+  <div class="org-chart-element-content">
+
+    {# Element image #}
+    {% if element.image_url %}
+      <div class="org-chart-element-image" {% if image_styles %}style="{{ image_styles }}"{% endif %}>
+        {% if element.link_url %}
+          <a href="{{ element.link_url }}" class="org-chart-element-link" target="_blank" rel="noopener noreferrer">
+            <img src="{{ element.image_url }}"
+                 alt="{{ element.title ?: 'Organization member'|t }}"
+                 loading="{{ theme_settings.general.lazy_loading|default(true) ? 'lazy' : 'eager' }}">
+          </a>
+        {% else %}
+          <img src="{{ element.image_url }}"
+               alt="{{ element.title ?: 'Organization member'|t }}"
+               loading="{{ theme_settings.general.lazy_loading|default(true) ? 'lazy' : 'eager' }}">
+        {% endif %}
+      </div>
+    {% else %}
+      {# Default placeholder image #}
+      <div class="org-chart-element-image org-chart-element-placeholder" {% if image_styles %}style="{{ image_styles }}"{% endif %}>
+        <svg viewBox="0 0 100 100" class="org-chart-placeholder-icon">
+          <circle cx="50" cy="35" r="15" fill="currentColor" opacity="0.3"/>
+          <path d="M25 75 Q25 65 35 65 L65 65 Q75 65 75 75 L75 85 L25 85 Z" fill="currentColor" opacity="0.3"/>
+        </svg>
+      </div>
+    {% endif %}
+
+    {# Element title #}
+    {% if element.title %}
+      <div class="org-chart-element-title">
+        {% if element.link_url %}
+          <a href="{{ element.link_url }}" class="org-chart-element-link" target="_blank" rel="noopener noreferrer">
+            {{ element.title }}
+          </a>
+        {% else %}
+          {{ element.title }}
+        {% endif %}
+      </div>
+    {% endif %}
+
+    {# Element description #}
+    {% if element.description %}
+      <div class="org-chart-element-description">
+        {% if element.link_url %}
+          <a href="{{ element.link_url }}" class="org-chart-element-link" target="_blank" rel="noopener noreferrer">
+            {{ element.description|raw }}
+          </a>
+        {% else %}
+          {{ element.description|raw }}
+        {% endif %}
+      </div>
+    {% endif %}
+
+  </div>
+
+  {# Click target for popups #}
+  {% if theme_settings.general.popup_enabled %}
+    <button type="button"
+            class="org-chart-element-popup-trigger"
+            aria-label="{{ 'View details for'|t }} {{ element.title ?: 'this person'|t }}"
+            data-element-title="{{ element.title }}"
+            data-element-description="{{ element.description }}"
+            data-element-image="{{ element.image_url }}"
+            data-element-link="{{ element.link_url }}">
+      <span class="visually-hidden">{{ 'View details'|t }}</span>
+      <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+        <circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-width="2"/>
+        <path d="M8 6v4M8 4h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </button>
+  {% endif %}
+
+  {# Connection points for lines #}
+  <div class="org-chart-connection-points" aria-hidden="true">
+    <div class="org-chart-connection-top"></div>
+    <div class="org-chart-connection-bottom"></div>
+    <div class="org-chart-connection-left"></div>
+    <div class="org-chart-connection-right"></div>
+  </div>
+
+</div>

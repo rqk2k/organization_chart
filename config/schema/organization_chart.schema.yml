@@ -1,0 +1,68 @@
+organization_chart.settings:
+  type: config_object
+  label: "Organization Chart settings"
+  mapping:
+    default_image:
+      type: integer
+      label: "Default placeholder image file ID"
+    cache_enabled:
+      type: boolean
+      label: "Enable caching"
+    lazy_loading:
+      type: boolean
+      label: "Enable lazy loading"
+    allow_user_charts:
+      type: boolean
+      label: "Allow users to create charts"
+    max_charts_per_user:
+      type: integer
+      label: "Maximum charts per user"
+    default_theme:
+      type: integer
+      label: "Default theme ID"
+    animation_enabled:
+      type: boolean
+      label: "Enable animations"
+    animation_duration:
+      type: integer
+      label: "Animation duration in milliseconds"
+    custom_css:
+      type: text
+      label: "Custom CSS"
+    custom_js:
+      type: text
+      label: "Custom JavaScript"
+
+block.settings.organization_chart_block:
+  type: block_settings
+  label: "Organization Chart block"
+  mapping:
+    chart_id:
+      type: integer
+      label: "Chart ID"
+    theme_id:
+      type: integer
+      label: "Theme ID"
+    show_title:
+      type: boolean
+      label: "Show chart title"
+    show_controls:
+      type: boolean
+      label: "Show zoom controls"
+    enable_fullscreen:
+      type: boolean
+      label: "Enable fullscreen button"
+    max_width:
+      type: string
+      label: "Maximum width"
+    max_height:
+      type: string
+      label: "Maximum height"
+
+filter_settings.organization_chart_shortcode:
+  type: filter
+  label: "Organization Chart Shortcodes filter"
+  mapping:
+    cache_enabled:
+      type: boolean
+      label: "Enable caching"

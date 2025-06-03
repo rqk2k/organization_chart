@@ -1,0 +1,149 @@
+{#
+/**
+ * @file
+ * Template for displaying an organization chart.
+ *
+ * Available variables:
+ * - chart: The chart object with id, name, data, etc.
+ * - elements: Array of chart elements.
+ * - theme_settings: Theme configuration settings.
+ * - config: Display configuration options.
+ * - hierarchy: Hierarchical structure of elements.
+ * - chart_classes: CSS classes for the chart container.
+ */
+#}
+
+<div class="{{ chart_classes|join(' ') }}"
+     data-chart-id="{{ chart.id }}"
+     data-chart-config="{{ config|json_encode|e }}"
+     style="max-width: {{ config.max_width }}; max-height: {{ config.max_height }};">
+
+  {% if config.show_title and chart.name %}
+    <div class="org-chart-header">
+      <h3 class="org-chart-title">{{ chart.name }}</h3>
+
+      {% if config.show_controls %}
+        <div class="org-chart-controls">
+          {% if theme_settings.general.zoom_enabled %}
+            <button type="button" class="org-chart-zoom-in" aria-label="{{ 'Zoom In'|t }}">
+              <span class="visually-hidden">{{ 'Zoom In'|t }}</span>
+              <svg width="16" height="16" viewBox="0 0 16 16">
+                <path d="M8 4v8M4 8h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </button>
+            <button type="button" class="org-chart-zoom-out" aria-label="{{ 'Zoom Out'|t }}">
+              <span class="visually-hidden">{{ 'Zoom Out'|t }}</span>
+              <svg width="16" height="16" viewBox="0 0 16 16">
+                <path d="M4 8h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </button>
+            <button type="button" class="org-chart-zoom-reset" aria-label="{{ 'Reset Zoom'|t }}">
+              <span class="visually-hidden">{{ 'Reset Zoom'|t }}</span>
+              <svg width="16" height="16" viewBox="0 0 16 16">
+                <circle cx="8" cy="8" r="3" fill="none" stroke="currentColor" stroke-width="2"/>
+              </svg>
+            </button>
+          {% endif %}
+
+          {% if config.enable_fullscreen %}
+            <button type="button" class="org-chart-fullscreen" aria-label="{{ 'Toggle Fullscreen'|t }}">
+              <span class="visually-hidden">{{ 'Toggle Fullscreen'|t }}</span>
+              <svg width="16" height="16" viewBox="0 0 16 16">
+                <path d="M3 3h3m7 0h-3m0 10h3m-7 0H3m0-7v3m10-3v3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          {% endif %}
+        </div>
+      {% endif %}
+    </div>
+  {% endif %}
+
+  <div class="org-chart-container"
+       data-responsive="{{ theme_settings.general.responsive ? 'true' : 'false' }}"
+       data-horizontal-scroll="{{ theme_settings.general.horizontal_scroll ? 'true' : 'false' }}">
+
+    <div class="org-chart-viewport">
+      <div class="org-chart-canvas">
+
+        {% if hierarchy %}
+          {{ _self.render_level(hierarchy, theme_settings, 0) }}
+
+          {# Render connection lines #}
+          <svg class="org-chart-lines" aria-hidden="true">
+            {% for element in elements %}
+              {% if element.parent_id %}
+                <line class="org-chart-line"
+                      data-from="{{ element.parent_id }}"
+                      data-to="{{ element.id }}"
+                      stroke="{{ theme_settings.line_style.line_color|default('#cccccc') }}"
+                      stroke-width="{{ theme_settings.line_style.line_width|default(2) }}"
+                      stroke-dasharray="{{ theme_settings.line_style.line_style == 'dashed' ? '5,5' : (theme_settings.line_style.line_style == 'dotted' ? '2,2' : 'none') }}">
+                </line>
+              {% endif %}
+            {% endfor %}
+          </svg>
+
+        {% else %}
+          <div class="org-chart-empty">
+            <p>{{ 'No elements found in this organization chart.'|t }}</p>
+          </div>
+        {% endif %}
+
+      </div>
+    </div>
+
+    {% if theme_settings.general.horizontal_scroll %}
+      <div class="org-chart-scrollbar-horizontal">
+        <div class="org-chart-scrollbar-thumb"></div>
+      </div>
+    {% endif %}
+
+  </div>
+
+  {# Popup modal for element details #}
+  {% if theme_settings.general.popup_enabled %}
+    <div class="org-chart-popup" role="dialog" aria-hidden="true" aria-labelledby="org-chart-popup-title">
+      <div class="org-chart-popup-backdrop"></div>
+      <div class="org-chart-popup-content">
+        <button type="button" class="org-chart-popup-close" aria-label="{{ 'Close'|t }}">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <div class="org-chart-popup-header">
+          <h4 id="org-chart-popup-title" class="org-chart-popup-title"></h4>
+        </div>
+        <div class="org-chart-popup-body">
+          <div class="org-chart-popup-image"></div>
+          <div class="org-chart-popup-description"></div>
+          <div class="org-chart-popup-link"></div>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+
+</div>
+
+{#
+/**
+ * Recursively renders organization chart levels.
+ */
+#}
+{% macro render_level(elements, theme_settings, level) %}
+  {% if elements %}
+    <div class="org-chart-level org-chart-level-{{ level }}">
+      {% for element in elements %}
+        <div class="org-chart-element-wrapper" data-element-id="{{ element.id }}">
+          {% include 'organization-chart-element.html.twig' with {
+            'element': element,
+            'theme_settings': theme_settings
+          } %}
+
+          {% if element.children %}
+            <div class="org-chart-children">
+              {{ _self.render_level(element.children, theme_settings, level + 1) }}
+            </div>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endmacro %}

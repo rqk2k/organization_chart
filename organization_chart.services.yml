@@ -1,0 +1,5 @@
+services:
+  organization_chart.service:
+    class: Drupal\organization_chart\OrganizationChartService
+    arguments:
+      ["@database", "@config.factory", "@entity_type.manager", "@renderer"]
