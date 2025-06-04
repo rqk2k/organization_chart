@@ -93,24 +93,29 @@ class OrganizationChartController extends ControllerBase {
       ];
     }
 
-    $build = [
-      '#type' => 'table',
-      '#header' => $header,
-      '#rows' => $rows,
-      '#empty' => $this->t('No organization charts available. <a href="@add-url">Add one now</a>.', [
-        '@add-url' => Url::fromRoute('organization_chart.chart_add')->toString(),
-      ]),
-    ];
+    $page_elements = []; // New parent array
 
-    $build['add_link'] = [
+    $page_elements['add_link'] = [
       '#type' => 'link',
       '#title' => $this->t('Add new organization chart'),
       '#url' => Url::fromRoute('organization_chart.chart_add'),
-      '#attributes' => ['class' => ['button', 'button--primary']],
+      '#attributes' => ['class' => ['button', 'button--primary', 'action-button']], // Added 'action-button' for distinct styling if needed
+      '#prefix' => '<div class="action-links">', // Optional wrapper for styling
+      '#suffix' => '</div>',
       '#weight' => -10,
     ];
 
-    return $build;
+    $page_elements['charts_table'] = [
+      '#type' => 'table',
+      '#header' => $header, // $header should be defined as it is currently
+      '#rows' => $rows,     // $rows should be defined as it is currently
+      '#empty' => $this->t('No organization charts available. <a href="@add-url">Add one now</a>.', [
+        '@add-url' => Url::fromRoute('organization_chart.chart_add')->toString(),
+      ]),
+      '#weight' => 0,
+    ];
+
+    return $page_elements; // Return the new parent array
   }
 
   /**
