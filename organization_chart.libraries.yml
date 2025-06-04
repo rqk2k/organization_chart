@@ -8,7 +8,7 @@ display:
   dependencies:
     - core/jquery
     - core/drupal
-    - core/jquery.once
+    - core/once
 
 builder:
   version: 1.x
@@ -20,7 +20,7 @@ builder:
   dependencies:
     - core/jquery
     - core/drupal
-    - core/jquery.once
+    - core/once
     - core/jquery.ui.draggable
     - core/jquery.ui.droppable
     - core/jquery.ui.sortable
@@ -35,6 +35,7 @@ admin:
   dependencies:
     - core/jquery
     - core/drupal
+    - core/once
 
 global:
   version: 1.x
